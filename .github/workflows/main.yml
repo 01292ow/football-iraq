@@ -3,33 +3,35 @@ name: Build Flutter APK
 on:
   push:
     branches:
-      - feature/bix-social-media-app  # أو غيّرها لفرعك
+      - feature/bix-social-media-app  # غيّرها لفرعك إذا لزم
 
 jobs:
   build:
-    name: Build APK
+    name: Build bix app APK
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.22.0'  # أو غيّرها لنسختك
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'  # غيّرها إن كنت تستخدم إصدارًا آخر
 
-    - name: Install Dependencies
-      run: flutter pub get
+      - name: Install Dependencies
+        run: |
+          cd bix_app
+          flutter pub get
 
-    - name: Build APK
-      run: |
-        set +e  # ← تجاهل الأخطاء واجعل السكربت يكمل
-        flutter build apk --release || true
+      - name: Build APK
+        run: |
+          cd bix_app
+          flutter build apk --release || true  # تجاهل الأخطاء
 
-    - name: Upload APK
-      if: success() || failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: release-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
+      - name: Upload APK
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bix-app-release-apk
+          path: bix_app/build/app/outputs/flutter-apk/app-release.apk
